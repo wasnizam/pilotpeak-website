@@ -124,7 +124,7 @@ const observer = new IntersectionObserver((entries) => {
 document.addEventListener('DOMContentLoaded', () => {
     const animatedElements = document.querySelectorAll(
         '.stat-card-premium, .solution-card, .enterprise-feature, .compliance-card-premium, ' +
-        '.tech-card-premium, .testimonial-card, .hero-stat'
+        '.tech-card-premium, .testimonial-card, .hero-metric'
     );
     
     animatedElements.forEach(el => {
@@ -135,7 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Animate hero elements
-    const heroElements = document.querySelectorAll('.hero-badge, .hero-title, .hero-subtitle, .hero-stats, .hero-buttons');
+    const heroElements = document.querySelectorAll(
+        '.hero-eyebrow, .hero-badge, .hero-title, .hero-subtitle, .hero-trust-strip, .hero-metrics-pro, .hero-buttons, .hero-cta-note, .hero-visual'
+    );
     heroElements.forEach((el, index) => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
@@ -189,7 +191,7 @@ const counterObserver = new IntersectionObserver((entries) => {
 
 // Observe stat values for counter animation
 document.addEventListener('DOMContentLoaded', () => {
-    const statValues = document.querySelectorAll('.stat-value-premium, .hero-stat-value');
+    const statValues = document.querySelectorAll('.stat-value-premium');
     statValues.forEach(stat => {
         counterObserver.observe(stat);
     });
