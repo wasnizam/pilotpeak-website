@@ -149,19 +149,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Counter animation for stats
-function animateCounter(element, target, duration = 2000) {
+// Counter animation for stats (preserves suffixes like % on the final value)
+function animateCounter(element, target, duration = 2000, suffix = '') {
     const start = 0;
     const increment = target / (duration / 16);
     let current = start;
-    
+
+    const tick = (n) => (suffix ? String(Math.floor(n)) + suffix : formatNumber(Math.floor(n)));
+
     const timer = setInterval(() => {
         current += increment;
         if (current >= target) {
-            element.textContent = formatNumber(target);
+            element.textContent = suffix ? String(Math.floor(target)) + suffix : formatNumber(target);
             clearInterval(timer);
         } else {
-            element.textContent = formatNumber(Math.floor(current));
+            element.textContent = tick(current);
         }
     }, 16);
 }
@@ -181,13 +183,18 @@ const counterObserver = new IntersectionObserver((entries) => {
         if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
             entry.target.classList.add('animated');
             const value = entry.target.textContent.trim();
-            // "24/7" must not become 247 when digits are stripped
+            // Slash text (e.g. "24/7") must not become one number when digits merge
             if (value.includes('/')) {
                 return;
             }
+            // Pure labels like "AI" — no counter
+            if (!/\d/.test(value)) {
+                return;
+            }
+            const suffix = value.includes('%') ? '%' : '';
             const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
             if (!isNaN(numericValue)) {
-                animateCounter(entry.target, numericValue);
+                animateCounter(entry.target, numericValue, 2000, suffix);
             }
         }
     });
