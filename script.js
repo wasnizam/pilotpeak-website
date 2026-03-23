@@ -265,8 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('enterprise-demo-form');
     const status = document.getElementById('enterprise-form-status');
     if (!form) return;
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const data = new FormData(form);
         const name = (data.get('name') || '').toString().trim();
@@ -275,21 +276,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const fleet = (data.get('fleet') || '').toString().trim();
         const message = (data.get('message') || '').toString().trim();
 
-        const subject = encodeURIComponent(`Enterprise demo request - ${company || 'PilotPeak Ops'}`);
-        const body = encodeURIComponent(
-`Name: ${name}
-Work email: ${email}
-Company: ${company}
-Fleet size: ${fleet}
-
-Evaluation goals:
-${message || '-'}
-`
-        );
-
-        window.location.href = `mailto:nizam.sabian@gmail.com?subject=${subject}&body=${body}`;
+        if (submitBtn) submitBtn.disabled = true;
         if (status) {
-            status.textContent = 'Opening your email client to complete the request.';
+            status.textContent = 'Submitting request...';
+        }
+
+        try {
+            const response = await fetch('/api/request-demo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    company,
+                    fleet,
+                    message
+                })
+            });
+
+            const result = await response.json();
+            if (!response.ok || !result.ok) {
+                throw new Error(result.message || 'Failed to submit request');
+            }
+
+            form.reset();
+            if (status) {
+                status.textContent = 'Request submitted. Our team will contact you shortly.';
+            }
+        } catch (error) {
+            if (status) {
+                status.textContent = 'Unable to submit right now. Please try again in a moment.';
+            }
+        } finally {
+            if (submitBtn) submitBtn.disabled = false;
         }
     });
 });
