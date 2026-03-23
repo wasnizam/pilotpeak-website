@@ -287,7 +287,7 @@ ${message || '-'}
 `
         );
 
-        window.location.href = `mailto:hello@pilotpeak.app?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:nizam.sabian@gmail.com?subject=${subject}&body=${body}`;
         if (status) {
             status.textContent = 'Opening your email client to complete the request.';
         }
