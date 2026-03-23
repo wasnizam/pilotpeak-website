@@ -327,6 +327,20 @@ body {
     overflow: hidden;
 }
 
+/* Transparent PNG hero: no glass panel behind image — alpha shows page background */
+.hero-visual-frame--cutout {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 0;
+    overflow: visible;
+}
+
+.hero-visual-frame--cutout .hero-visual-ring {
+    display: none;
+}
+
 .hero-visual-ring {
     position: absolute;
     inset: 0;
@@ -348,6 +362,12 @@ body {
     height: auto;
     border-radius: var(--radius-l);
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45), 0 0 48px rgba(89, 191, 77, 0.12);
+    background: transparent;
+}
+
+.hero-visual-frame--cutout .hero-visual-shot {
+    border-radius: 0;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 /* Legacy: square app icon in hero (if used elsewhere) */
