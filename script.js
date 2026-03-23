@@ -260,6 +260,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Enterprise demo request form (mailto fallback without backend)
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('enterprise-demo-form');
+    const status = document.getElementById('enterprise-form-status');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const name = (data.get('name') || '').toString().trim();
+        const email = (data.get('email') || '').toString().trim();
+        const company = (data.get('company') || '').toString().trim();
+        const fleet = (data.get('fleet') || '').toString().trim();
+        const message = (data.get('message') || '').toString().trim();
+
+        const subject = encodeURIComponent(`Enterprise demo request - ${company || 'PilotPeak Ops'}`);
+        const body = encodeURIComponent(
+`Name: ${name}
+Work email: ${email}
+Company: ${company}
+Fleet size: ${fleet}
+
+Evaluation goals:
+${message || '-'}
+`
+        );
+
+        window.location.href = `mailto:hello@pilotpeak.app?subject=${subject}&body=${body}`;
+        if (status) {
+            status.textContent = 'Opening your email client to complete the request.';
+        }
+    });
+});
+
 // Modal animation
 const modal = document.getElementById('disclaimerModal');
 if (modal) {

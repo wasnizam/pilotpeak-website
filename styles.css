@@ -865,6 +865,97 @@ body {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
 }
 
+.product-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.enterprise-request-section {
+    padding: var(--spacing-xxl) 0;
+    background: var(--bg-secondary);
+}
+
+.enterprise-request-card {
+    background: var(--gradient-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-l);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-card);
+}
+
+.enterprise-form {
+    margin-top: var(--spacing-l);
+}
+
+.enterprise-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-m);
+}
+
+.enterprise-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.enterprise-field span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.enterprise-field input,
+.enterprise-field select,
+.enterprise-field textarea {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(12, 15, 22, 0.85);
+    color: var(--text-primary);
+    border-radius: var(--radius-s);
+    padding: 12px 14px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.enterprise-field input:focus,
+.enterprise-field select:focus,
+.enterprise-field textarea:focus {
+    border-color: rgba(89, 191, 77, 0.55);
+    box-shadow: 0 0 0 3px rgba(89, 191, 77, 0.15);
+}
+
+.enterprise-field textarea {
+    resize: vertical;
+}
+
+.enterprise-field-full {
+    margin-top: var(--spacing-m);
+}
+
+.enterprise-form-actions {
+    margin-top: var(--spacing-l);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-m);
+}
+
+.enterprise-form-note {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.enterprise-form-status {
+    margin-top: var(--spacing-m);
+    font-size: 13px;
+    color: var(--accent-secondary);
+}
+
 .solutions-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -1921,6 +2012,7 @@ body {
     .stats-grid-premium,
     .solutions-grid,
     .products-grid,
+    .enterprise-form-grid,
     .enterprise-grid,
     .compliance-grid-premium,
     .tech-grid-premium,
