@@ -338,6 +338,19 @@ body {
     pointer-events: none;
 }
 
+/* Hero marketing shot (transparent PNG — phone / UI mock) */
+.hero-visual-frame .hero-visual-shot {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    max-width: min(520px, 88vw);
+    height: auto;
+    border-radius: var(--radius-l);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45), 0 0 48px rgba(89, 191, 77, 0.12);
+}
+
+/* Legacy: square app icon in hero (if used elsewhere) */
 .hero-visual-frame .hero-visual-logo {
     position: relative;
     z-index: 1;
@@ -1651,6 +1664,7 @@ body {
         min-height: 400px;
     }
     
+    .hero-visual-shot,
     .hero-visual-logo {
         max-width: 100%;
     }
@@ -1750,6 +1764,7 @@ body {
         min-height: 300px;
     }
     
+    .hero-visual-shot,
     .hero-visual-logo {
         max-width: 100%;
     }
@@ -1881,6 +1896,7 @@ body {
         min-height: 250px;
     }
     
+    .hero-visual-shot,
     .hero-visual-logo {
         max-width: 100%;
     }
