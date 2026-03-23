@@ -180,7 +180,11 @@ const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
             entry.target.classList.add('animated');
-            const value = entry.target.textContent;
+            const value = entry.target.textContent.trim();
+            // "24/7" must not become 247 when digits are stripped
+            if (value.includes('/')) {
+                return;
+            }
             const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
             if (!isNaN(numericValue)) {
                 animateCounter(entry.target, numericValue);
