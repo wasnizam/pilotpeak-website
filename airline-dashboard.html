@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PilotPeak – Airline Fatigue Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #020617;
+      --card: #020617;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+      --warn: #f97316;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top,#0f172a,#020617); color: var(--text); }
+    header, main { padding: 32px 5vw; }
+    h1,h2,h3 { margin: 0 0 12px; }
+    .sub { color: var(--muted); font-size: 13px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+    .logo { display:flex; align-items:center; gap:8px; }
+    .logo-badge { width:28px;height:28px;border-radius:999px;background:linear-gradient(135deg,#22d3ee,#0ea5e9); }
+    .top-right { display:flex; gap:16px; font-size:13px; color:var(--muted); align-items:center; }
+    .filter-pill { padding:4px 10px; border-radius:999px; background:#0f172a; border:1px solid #1f2937; }
+    .grid { display:grid; gap:20px; }
+    .grid-3 { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .grid-2 { grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); margin-top:28px; }
+    .card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:18px 18px 16px; }
+    .badge { display:inline-flex; align-items:center; gap:6px; padding:3px 8px; border-radius:999px; background:#0f172a; color:#93c5fd; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
+    .metric { font-size:26px; font-weight:700; }
+    .metric-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.14em; }
+    .kpi-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .kpi-pill { padding:4px 8px; border-radius:999px; background:#020617; font-size:11px; color:var(--muted); }
+    .bar-row { display:flex; align-items:center; justify-content:space-between; margin-top:6px; font-size:12px; }
+    .bar { flex:1; height:6px; border-radius:999px; background:#020617; margin:0 8px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:999px; }
+    .table { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+    .table th { text-align:left; padding-bottom:6px; color:var(--muted); border-bottom:1px solid #111827; font-weight:500; }
+    .table td { padding:6px 0; border-bottom:1px solid #020617; }
+    .chip { padding:2px 6px; border-radius:999px; font-size:11px; }
+    .chip-low { background:#0f766e33; color:#22c55e; }
+    .chip-high { background:#f9731633; color:#f97316; }
+    .chip-crit { background:#dc262633; color:#fca5a5; }
+    .chip-est { background:#facc1533; color:#facc15; }
+    .chip-full { background:#22c55e33; color:#22c55e; }
+    .chip-ins { background:#6b728033; color:#9ca3af; }
+
+    .chart { height:160px; border-radius:12px; background:linear-gradient(to top,#020617,#020617,#0f172a); padding:10px; display:flex; gap:4px; align-items:flex-end; margin-top:10px; }
+    .chart-bar { flex:1; border-radius:4px 4px 0 0; background:linear-gradient(to top,#0ea5e9,#22d3ee); opacity:.8; }
+    .chart-line { flex:1; border-radius:999px; background:linear-gradient(to top,#f97316,#facc15); height:2px; margin-top:auto; }
+
+    .detail { display:flex; flex-direction:row; gap:20px; margin-top:28px; flex-wrap:wrap; }
+    .detail-left { flex:2 1 320px; }
+    .detail-right { flex:1 1 260px; }
+
+    .tag { padding:3px 8px; border-radius:999px; background:#0f172a; color:#e5e7eb; font-size:11px; }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-badge"></div>
+      <div>
+        <div style="font-weight:600;font-size:16px;">PilotPeak Ops</div>
+        <div class="sub" style="font-size:11px;">Airline Fatigue Intelligence</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="filter-pill">Base: All</div>
+      <div class="filter-pill">Fleet: A320 / B737</div>
+      <div class="filter-pill">Last: 7 days ▼</div>
+    </div>
+  </div>
+  <h1 style="font-size:26px;margin-bottom:6px;">Fatigue Risk Overview</h1>
+  <p class="sub">Snapshot across all flights in the last 7 days. Drill down by base, fleet, route or pairing to see where risk concentrates.</p>
+</header>
+
+<main>
+
+  <!-- Top-level KPIs -->
+  <section class="grid grid-3">
+    <!-- Overall risk levels -->
+    <div class="card">
+      <span class="badge">Fleet risk levels</span>
+      <h3 style="margin-top:10px;">Flights by FI at departure</h3>
+      <div class="bar-row">
+        <span class="metric-label">LOW (0–24)</span>
+        <div class="bar"><div class="bar-fill" style="width:54%;background:#22c55e;"></div></div>
+        <span class="metric">54%</span>
+      </div>
+      <div class="bar-row">
+        <span class="metric-label">MODERATE (25–49)</span>
+        <div class="bar"><div class="bar-fill" style="width:26%;background:#eab308;"></div></div>
+        <span class="metric">26%</span>
+      </div>
+      <div class="bar-row">
+        <span class="metric-label">HIGH (50–74)</span>
+        <div class="bar"><div class="bar-fill" style="width:15%;background:#f97316;"></div></div>
+        <span class="metric" style="color:var(--warn);">15%</span>
+      </div>
+      <div class="bar-row">
+        <span class="metric-label">CRITICAL (75–100)</span>
+        <div class="bar"><div class="bar-fill" style="width:5%;background:var(--danger);"></div></div>
+        <span class="metric" style="color:var(--danger);">5%</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-pill">Avg FI at block‑off: 61</span>
+        <span class="kpi-pill">Avg FI at block‑on: 68</span>
+      </div>
+    </div>
+
+    <!-- Hotspots -->
+    <div class="card">
+      <span class="badge">Operational hotspots</span>
+      <h3 style="margin-top:10px;">Pairings with elevated fatigue</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Pairing</th>
+            <th style="text-align:right;">FI ≥ 70</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LHR–DXB–LHR (late/early)</td>
+            <td style="text-align:right;">
+              <span class="chip chip-crit">32%</span>
+            </td>
+          </tr>
+          <tr>
+            <td>KUL–SYD–KUL (WOCL return)</td>
+            <td style="text-align:right;">
+              <span class="chip chip-high">27%</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Base A – 4‑sector day</td>
+            <td style="text-align:right;">
+              <span class="chip chip-high">19%</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Night freight – hub turn</td>
+            <td style="text-align:right;">
+              <span class="chip chip-high">21%</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sub" style="font-size:11px;margin-top:8px;">
+        Use this view to prioritise FRMS reviews and mitigations (duty limits, additional rest, rostering changes).
+      </p>
+    </div>
+
+    <!-- Data quality -->
+    <div class="card">
+      <span class="badge">Data quality</span>
+      <h3 style="margin-top:10px;">Input coverage & reliability</h3>
+      <ul style="list-style:none;padding:0;margin:8px 0 0;font-size:13px;">
+        <li>FULL (sleep + HRV + RHR): <span class="chip chip-full">56%</span></li>
+        <li>ESTIMATED (time‑based only): <span class="chip chip-est">34%</span></li>
+        <li>INSUFFICIENT: <span class="chip chip-ins">10%</span></li>
+      </ul>
+      <p class="sub" style="font-size:12px;margin-top:10px;">
+        Apple Watch coverage (valid HRV in last 24h): <strong>68%</strong><br />
+        Data from devices is never used blindly – every FI is tagged with data‑quality to prevent false confidence.
+      </p>
+    </div>
+  </section>
+
+  <!-- Trends -->
+  <section class="grid grid-2">
+    <div class="card">
+      <span class="badge">Trend</span>
+      <h3 style="margin-top:10px;">Daily FI ≥ 75 by departure day</h3>
+      <div class="chart">
+        <div class="chart-bar" style="height:18%;"></div>
+        <div class="chart-bar" style="height:24%;"></div>
+        <div class="chart-bar" style="height:32%;"></div>
+        <div class="chart-bar" style="height:28%;"></div>
+        <div class="chart-bar" style="height:20%;"></div>
+        <div class="chart-bar" style="height:15%;"></div>
+        <div class="chart-bar" style="height:22%;"></div>
+      </div>
+      <p class="sub" style="font-size:12px;margin-top:8px;">
+        Peaks around late‑finish / early‑start banks. Use this to track impact of roster changes over time.
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="badge">Time of day</span>
+      <h3 style="margin-top:10px;">Average FI vs departure time</h3>
+      <div class="chart">
+        <!-- Simple mock: a gradient line for FI by hour -->
+        <div class="chart-line"></div>
+      </div>
+      <p class="sub" style="font-size:12px;margin-top:8px;">
+        Higher FI around early‑morning departures and post‑midnight returns, reflecting WOCL exposure and extended wakefulness.
+      </p>
+    </div>
+  </section>
+
+  <!-- Drilldown -->
+  <section class="detail">
+    <div class="detail-left card">
+      <span class="badge">Flight list (filtered)</span>
+      <h3 style="margin-top:10px;">Recent flights – Base: KUL, Last 48h</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Flight / Date</th>
+            <th>Dep FI</th>
+            <th>Arr FI</th>
+            <th>Quality</th>
+            <th>Duty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PK123 KUL–SYD<br/><span class="sub" style="font-size:11px;">2026‑02‑12 22:15L</span></td>
+            <td><span class="chip chip-high">72</span></td>
+            <td><span class="chip chip-crit">81</span></td>
+            <td><span class="chip chip-full">FULL</span></td>
+            <td>11h 40m</td>
+          </tr>
+          <tr>
+            <td>PK456 KUL–SIN–KUL<br/><span class="sub" style="font-size:11px;">2026‑02‑12 06:05L</span></td>
+            <td><span class="chip chip-high">68</span></td>
+            <td><span class="chip chip-high">70</span></td>
+            <td><span class="chip chip-est">EST</span></td>
+            <td>8h 10m</td>
+          </tr>
+          <tr>
+            <td>PK789 KUL–HKG<br/><span class="sub" style="font-size:11px;">2026‑02‑11 13:20L</span></td>
+            <td><span class="chip chip-low">24</span></td>
+            <td><span class="chip chip-low">31</span></td>
+            <td><span class="chip chip-full">FULL</span></td>
+            <td>5h 30m</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sub" style="font-size:11px;margin-top:8px;">
+        Click a row (in a real app) to open detailed fatigue profile and sleep/duty context for that duty.
+      </p>
+    </div>
+
+    <div class="detail-right card">
+      <span class="badge">Selected duty – example</span>
+      <h3 style="margin-top:10px;">PK123 KUL–SYD – 12 Feb</h3>
+      <p class="sub" style="font-size:12px;">
+        Departure FI: <strong>72 (HIGH)</strong> • Arrival FI: <strong>81 (CRITICAL)</strong><br/>
+        Data quality: <span class="chip chip-full">FULL (sleep + HRV + RHR)</span>
+      </p>
+      <ul style="list-style:none;padding:0;margin:10px 0;font-size:12px;color:var(--muted);">
+        <li>Sleep last 3 nights: 5.2h, 6.0h, 5.5h (chronic restriction)</li>
+        <li>Time since wake at departure: 11.4h</li>
+        <li>Duty length: 11h 40m • WOCL exposure: Yes (03:10–04:20 body clock)</li>
+        <li>Primary contributors: <span class="tag">Sleep debt</span> <span class="tag">Extended duty</span> <span class="tag">Circadian low</span></li>
+      </ul>
+      <p class="sub" style="font-size:12px;margin-top:4px;">
+        Recommendation: Consider augmented crew or adjusted report time for this pattern, or mandatory rest extension after 2 consecutive occurrences.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
+
