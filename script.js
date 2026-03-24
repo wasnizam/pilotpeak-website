@@ -48,6 +48,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function showEnterpriseForm() {
+    const wrapper = document.getElementById('enterprise-form-wrapper');
+    const success = document.getElementById('enterprise-form-success');
+    const teaser = document.getElementById('enterprise-form-teaser');
+    if (wrapper) wrapper.classList.remove('is-hidden');
+    if (success) success.classList.add('is-hidden');
+    if (teaser) teaser.classList.add('is-hidden');
+}
+
+function showEnterpriseSuccess() {
+    const wrapper = document.getElementById('enterprise-form-wrapper');
+    const success = document.getElementById('enterprise-form-success');
+    const teaser = document.getElementById('enterprise-form-teaser');
+    if (wrapper) wrapper.classList.add('is-hidden');
+    if (success) success.classList.remove('is-hidden');
+    if (teaser) teaser.classList.add('is-hidden');
+}
+
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -59,8 +77,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 top: offsetTop,
                 behavior: 'smooth'
             });
+            if (this.classList.contains('js-open-enterprise-form')) {
+                setTimeout(() => showEnterpriseForm(), 400);
+            }
         }
     });
+});
+
+document.querySelectorAll('.js-show-enterprise-form').forEach(btn => {
+    btn.addEventListener('click', () => showEnterpriseForm());
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash === '#enterprise-demo-request') {
+        showEnterpriseForm();
+    }
 });
 
 // Show full disclaimer modal
@@ -303,8 +334,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             form.reset();
             if (status) {
-                status.textContent = 'Request submitted. Our team will contact you shortly.';
+                status.textContent = '';
             }
+            showEnterpriseSuccess();
         } catch (error) {
             if (status) {
                 status.textContent = 'Unable to submit right now. Please try again in a moment.';

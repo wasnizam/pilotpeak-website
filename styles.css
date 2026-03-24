@@ -884,8 +884,49 @@ body {
     box-shadow: var(--shadow-card);
 }
 
-.enterprise-form {
+.is-hidden {
+    display: none !important;
+}
+
+.enterprise-form-teaser {
     margin-top: var(--spacing-l);
+    text-align: center;
+}
+
+.enterprise-form-teaser-text {
+    margin: 0 0 var(--spacing-m);
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.enterprise-form-wrapper {
+    margin-top: var(--spacing-l);
+}
+
+.enterprise-form-success {
+    margin-top: var(--spacing-l);
+    padding: var(--spacing-l);
+    border-radius: var(--radius-m);
+    border: 1px solid rgba(89, 191, 77, 0.35);
+    background: rgba(89, 191, 77, 0.08);
+    text-align: center;
+}
+
+.enterprise-form-success-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.enterprise-form-success p:last-child {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.enterprise-form {
+    margin-top: 0;
 }
 
 .enterprise-form-grid {
