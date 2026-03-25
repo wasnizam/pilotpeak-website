@@ -269,14 +269,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Enterprise demo request form (mailto fallback without backend)
+// Enterprise demo request form (mailto — no server)
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('enterprise-demo-form');
     const status = document.getElementById('enterprise-form-status');
     if (!form) return;
-    const submitBtn = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         const data = new FormData(form);
         const name = (data.get('name') || '').toString().trim();
@@ -285,43 +284,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const fleet = (data.get('fleet') || '').toString().trim();
         const message = (data.get('message') || '').toString().trim();
 
-        if (submitBtn) submitBtn.disabled = true;
+        const to = (form.dataset.mailto || 'hello@pilotpeak.app').trim();
+        if (!to) {
+            if (status) {
+                status.textContent = 'Demo inbox is not configured. Please contact us from the home page.';
+            }
+            return;
+        }
+
+        const subject = `Enterprise demo request - ${company}`;
+        const body = [
+            'New enterprise demo request (PilotPeak Ops)',
+            '',
+            `Name: ${name}`,
+            `Work email: ${email}`,
+            `Company / operator: ${company}`,
+            `Fleet size: ${fleet}`,
+            '',
+            'What they are evaluating:',
+            message || '—',
+        ].join('\n');
+
+        const href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        if (href.length > 2000) {
+            if (status) {
+                status.textContent = 'Message is too long for email link. Shorten the notes field and try again.';
+            }
+            return;
+        }
+
+        window.location.href = href;
+        form.reset();
         if (status) {
-            status.textContent = 'Submitting request...';
+            status.textContent = '';
         }
-
-        try {
-            const response = await fetch('/api/request-demo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    company,
-                    fleet,
-                    message
-                })
-            });
-
-            const result = await response.json();
-            if (!response.ok || !result.ok) {
-                throw new Error(result.message || 'Failed to submit request');
-            }
-
-            form.reset();
-            if (status) {
-                status.textContent = '';
-            }
-            showEnterpriseSuccess();
-        } catch (error) {
-            if (status) {
-                status.textContent = 'Unable to submit right now. Please try again in a moment.';
-            }
-        } finally {
-            if (submitBtn) submitBtn.disabled = false;
-        }
+        showEnterpriseSuccess();
     });
 });
 
