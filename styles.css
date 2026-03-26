@@ -826,6 +826,28 @@ body {
     border-color: rgba(64, 166, 204, 0.28);
 }
 
+.product-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: var(--spacing-m);
+}
+
+.product-badges .product-badge {
+    margin-bottom: 0;
+}
+
+.product-badge-soon {
+    color: rgb(217, 179, 64);
+    background: rgba(217, 179, 64, 0.12);
+    border-color: rgba(217, 179, 64, 0.35);
+}
+
+.enterprise-page-soon {
+    margin: 0 0 var(--spacing-m);
+}
+
 .product-title {
     font-size: 28px;
     font-weight: 800;
